@@ -1,0 +1,48 @@
+-- CreateTable
+CREATE TABLE "User" (
+    "user_id" TEXT NOT NULL,
+    "nickname" VARCHAR(50) NOT NULL,
+    "first_name" VARCHAR(100) NOT NULL,
+    "last_name" VARCHAR(100) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "identification_type" VARCHAR(20),
+    "identification_number" VARCHAR(50),
+    "country_id" INTEGER,
+    "state" VARCHAR(100),
+    "city" VARCHAR(100),
+    "address" TEXT,
+    "zip_code" VARCHAR(20),
+    "phone_area_code" VARCHAR(10),
+    "phone_number" VARCHAR(20),
+    "phone_verified" BOOLEAN NOT NULL DEFAULT false,
+    "alternative_phone_area_code" VARCHAR(10),
+    "alternative_phone_number" VARCHAR(20),
+    "user_type" VARCHAR(20),
+    "seller_experience" VARCHAR(50),
+    "seller_reputation_level_id" INTEGER,
+    "seller_power_seller_status" BOOLEAN NOT NULL DEFAULT false,
+    "seller_transactions_total" INTEGER NOT NULL DEFAULT 0,
+    "seller_transactions_completed" INTEGER NOT NULL DEFAULT 0,
+    "seller_transactions_canceled" INTEGER NOT NULL DEFAULT 0,
+    "seller_ratings_positive" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "seller_ratings_negative" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "seller_ratings_neutral" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "buyer_canceled_transactions" INTEGER NOT NULL DEFAULT 0,
+    "site_status" VARCHAR(20),
+    "allow_to_list" BOOLEAN NOT NULL DEFAULT false,
+    "allow_to_buy" BOOLEAN NOT NULL DEFAULT false,
+    "allow_to_sell" BOOLEAN NOT NULL DEFAULT false,
+    "mercadopago_tc_accepted" BOOLEAN NOT NULL DEFAULT false,
+    "mercadopago_account_type" VARCHAR(20),
+    "mercadoenvios" BOOLEAN NOT NULL DEFAULT false,
+    "credit_consumed" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "credit_level_id" INTEGER,
+    "tags" VARCHAR(255),
+    "points" INTEGER NOT NULL DEFAULT 0,
+    "permalink" TEXT,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
