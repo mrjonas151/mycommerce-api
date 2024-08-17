@@ -1,44 +1,46 @@
+
+
 class User {
-    id: string;
-    nickname: string;
-    registration_date: string;
-    first_name: string;
-    last_name: string;
-    gender: string;
-    country_id: string;
-    email: string;
-    identification: {
+    user_id!: string;
+    nickname!: string;
+    registration_date!: string;
+    first_name!: string;
+    last_name!: string;
+    gender!: string;
+    country_id!: string;
+    email!: string;
+    identification!: {
         number: string;
         type: string;
     };
-    address: {
+    address!: {
         address: string;
         city: string;
         state: string;
         zip_code: string;
     };
-    phone: {
+    phone!: {
         area_code: string | null;
         extension: string | null;
         number: string | null;
         verified: boolean;
     };
-    alternative_phone: {
+    alternative_phone!: {
         area_code: string;
         extension: string;
         number: string;
     };
-    user_type: string;
-    tags: string[];
-    logo: string | null;
-    points: number;
-    site_id: string;
-    permalink: string;
-    seller_experience: string;
-    bill_data: {
+    user_type!: string;
+    tags!: string[];
+    logo!: string | null;
+    points!: number;
+    site_id!: string;
+    permalink!: string;
+    seller_experience!: string;
+    bill_data!: {
         accept_credit_note: string;
     };
-    seller_reputation: {
+    seller_reputation!: {
         level_id: string;
         power_seller_status: string;
         transactions: {
@@ -74,7 +76,7 @@ class User {
             };
         };
     };
-    buyer_reputation: {
+    buyer_reputation!: {
         canceled_transactions: number;
         tags: string[];
         transactions: {
@@ -96,7 +98,7 @@ class User {
             };
         };
     };
-    status: {
+    status!: {
         billing: {
             allow: boolean;
             codes: string[];
@@ -144,8 +146,8 @@ class User {
             user_status_attributes: string[];
         };
     };
-    secure_email: string;
-    company: {
+    secure_email!: string;
+    company!: {
         brand_name: string;
         city_tax_id: string;
         corporate_name: string;
@@ -154,19 +156,19 @@ class User {
         cust_type_id: string;
         soft_descriptor: string;
     };
-    credit: {
+    credit!: {
         consumed: number;
         credit_level_id: string;
         rank: string;
     };
-    context: {
+    context!: {
         ip_address: string;
     };
-    thumbnail: {
+    thumbnail!: {
         picture_id: string;
         picture_url: string;
     };
-    registration_identifiers: any[];
+    registration_identifiers!: any[];
 
     constructor(payload: User) {
         Object.assign(this, payload);

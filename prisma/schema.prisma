@@ -18,6 +18,7 @@ model User {
   nickname                 String  @db.VarChar(50)
   first_name               String  @db.VarChar(100)
   last_name                String  @db.VarChar(100)
+  gender                   String? @db.VarChar(20)
   email                    String  @unique @db.VarChar(255)
   identification_type      String? @db.VarChar(20)
   identification_number    String? @db.VarChar(50)
@@ -49,9 +50,19 @@ model User {
   mercadopago_tc_accepted  Boolean @default(false)
   mercadopago_account_type String? @db.VarChar(20)
   mercadoenvios            Boolean @default(false)
-  credit_consumed          Float   @default(0.0)
-  credit_level_id          Int?
+  credit                   Json?   
   tags                     String? @db.VarChar(255)
   points                   Int     @default(0)
+  site_id                  String? @db.Text
   permalink                String? @db.Text
+  logo                    String? @db.VarChar(255)
+  bill_data                String? @db.Text 
+  seller_reputation        String?  @db.Text 
+  buyer_reputation         String?  @db.Text 
+  status                   String? @db.VarChar(20) 
+  secure_email             Boolean @default(false) 
+  company                  String? @db.VarChar(100) 
+  context                  String? @db.Text 
+  thumbnail                String? @db.Text 
+  registration_identifiers String? @db.Text 
 }
