@@ -8,4 +8,4 @@ router.get("/", UserController.getUser);
 router.post("/", UserController.createUser);
 
 
-export { router };
+export default router;
