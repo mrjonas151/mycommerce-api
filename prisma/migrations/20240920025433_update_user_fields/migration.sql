@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "nickname" DROP NOT NULL,
+ALTER COLUMN "phone_verified" DROP NOT NULL,
+ALTER COLUMN "seller_power_seller_status" DROP NOT NULL,
+ALTER COLUMN "seller_transactions_total" DROP NOT NULL,
+ALTER COLUMN "seller_transactions_completed" DROP NOT NULL,
+ALTER COLUMN "seller_transactions_canceled" DROP NOT NULL,
+ALTER COLUMN "seller_ratings_positive" DROP NOT NULL,
+ALTER COLUMN "seller_ratings_negative" DROP NOT NULL,
+ALTER COLUMN "seller_ratings_neutral" DROP NOT NULL,
+ALTER COLUMN "buyer_canceled_transactions" DROP NOT NULL,
+ALTER COLUMN "allow_to_list" DROP NOT NULL,
+ALTER COLUMN "allow_to_buy" DROP NOT NULL,
+ALTER COLUMN "allow_to_sell" DROP NOT NULL,
+ALTER COLUMN "mercadopago_tc_accepted" DROP NOT NULL,
+ALTER COLUMN "mercadoenvios" DROP NOT NULL,
+ALTER COLUMN "points" DROP NOT NULL,
+ALTER COLUMN "secure_email" DROP NOT NULL;

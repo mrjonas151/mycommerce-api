@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   user_id                  String  @id 
-  nickname                 String  @db.VarChar(50)
+  nickname                 String?  @db.VarChar(50)
   first_name               String  @db.VarChar(100)
   last_name                String  @db.VarChar(100)
   gender                   String? @db.VarChar(20)
@@ -29,40 +29,40 @@ model User {
   zip_code                 String? @db.VarChar(20)
   phone_area_code          String? @db.VarChar(10)
   phone_number             String? @db.VarChar(20)
-  phone_verified           Boolean @default(false)
+  phone_verified           Boolean? @default(false)
   alternative_phone_area_code String? @db.VarChar(10)
   alternative_phone_number String? @db.VarChar(20)
   user_type                String? @db.VarChar(20)
   seller_experience        String? @db.VarChar(50)
   seller_reputation_level_id Int?
-  seller_power_seller_status Boolean @default(false)
-  seller_transactions_total Int    @default(0)
-  seller_transactions_completed Int @default(0)
-  seller_transactions_canceled Int @default(0)
-  seller_ratings_positive  Float   @default(0.0)
-  seller_ratings_negative  Float   @default(0.0)
-  seller_ratings_neutral   Float   @default(0.0)
-  buyer_canceled_transactions Int  @default(0)
+  seller_power_seller_status Boolean? @default(false)
+  seller_transactions_total Int?    @default(0)
+  seller_transactions_completed Int? @default(0)
+  seller_transactions_canceled Int? @default(0)
+  seller_ratings_positive  Float?   @default(0.0)
+  seller_ratings_negative  Float?   @default(0.0)
+  seller_ratings_neutral   Float?   @default(0.0)
+  buyer_canceled_transactions Int?  @default(0)
   site_status              String? @db.VarChar(20)
-  allow_to_list            Boolean @default(false)
-  allow_to_buy             Boolean @default(false)
-  allow_to_sell            Boolean @default(false)
-  mercadopago_tc_accepted  Boolean @default(false)
+  allow_to_list            Boolean? @default(false)
+  allow_to_buy             Boolean? @default(false)
+  allow_to_sell            Boolean? @default(false)
+  mercadopago_tc_accepted  Boolean? @default(false)
   mercadopago_account_type String? @db.VarChar(20)
-  mercadoenvios            Boolean @default(false)
+  mercadoenvios            Boolean? @default(false)
   credit                   Json?   
   tags                     String? @db.VarChar(255)
-  points                   Int     @default(0)
+  points                   Int?     @default(0)
   site_id                  String? @db.Text
   permalink                String? @db.Text
-  logo                    String? @db.VarChar(255)
+  logo                     String? @db.VarChar(255)
   bill_data                String? @db.Text 
   seller_reputation        String?  @db.Text 
   buyer_reputation         String?  @db.Text 
   status                   String? @db.VarChar(20) 
-  secure_email             Boolean @default(false) 
+  secure_email             Boolean? @default(false) 
   company                  String? @db.VarChar(100) 
   context                  String? @db.Text 
   thumbnail                String? @db.Text 
   registration_identifiers String? @db.Text 
-}
+}  
