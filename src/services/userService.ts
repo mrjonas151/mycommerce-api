@@ -59,6 +59,7 @@ class UserService {
                 email: true,
                 phone: true,
                 user_level: true,
+                companies: true,
                 createdAt: true,
                 updatedAt: true,
             }
