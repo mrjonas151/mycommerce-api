@@ -1,22 +1,16 @@
 import prisma from "../prisma/prismaClient";
-import { User } from "../models/userModel";
-
-
+import { User, Company } from "../models/userModel";
 
 class UserService {
     static async createUserService(data: User) {
         const {
-            user_id, nickname, first_name, last_name, gender, 
-            country_id: countryId, email, identification, 
-            address,  // Agora, apenas verificamos se o campo `address` existe
-            phone, alternative_phone, 
-            user_type, tags, logo, points, site_id, permalink, seller_experience, 
-            bill_data, seller_reputation, buyer_reputation, status, secure_email, 
-            company, credit, context, thumbnail, registration_identifiers
+            user_id,
+            first_name,
+            last_name,
+            email,
+            phone,
+            user_level,
         } = data;
-        
-        const registration_date = new Date(); 
-        const country_id = countryId ? parseInt(countryId, 10) : null;
 
         if (!user_id || !email) {
             throw new Error("ID or Email is missing");
@@ -33,49 +27,23 @@ class UserService {
         const user = await prisma.user.create({
             data: {
                 user_id,
-                nickname: nickname ?? null,
                 first_name,
                 last_name,
-                gender: gender ?? null,
-                country_id,
                 email,
-                identification_type: identification?.type ?? null,  // Verifica se `identification` existe
-                identification_number: identification?.number ?? null,  // Verifica se `identification` existe
-                address: address?.address ?? null,  // Verifica se `address` existe
-                phone_area_code: phone?.area_code ?? null,  // Verifica se `phone` existe
-                phone_number: phone?.number ?? null,
-                phone_verified: phone?.verified ?? false,
-                alternative_phone_area_code: alternative_phone?.area_code ?? null,
-                alternative_phone_number: alternative_phone?.number ?? null,
-                user_type: user_type ?? null,
-                tags: tags?.join(",") ?? null,
-                logo: logo ?? null,
-                points: points ?? 0,
-                site_id: site_id ?? null,
-                permalink: permalink ?? null,
-                seller_experience: seller_experience ?? null,
-                bill_data: bill_data ? JSON.stringify(bill_data) : null,
-                seller_reputation: seller_reputation ? JSON.stringify(seller_reputation) : null,
-                buyer_reputation: buyer_reputation ? JSON.stringify(buyer_reputation) : null,
-                status: status ? JSON.stringify(status) : null,
-                secure_email: Boolean(secure_email),
-                company: company ? JSON.stringify(company) : null,
-                credit: credit ?? null,
-                context: context ? JSON.stringify(context) : null,
-                thumbnail: thumbnail?.picture_url ?? null,
-                registration_identifiers: registration_identifiers?.join(",") ?? null
+                phone: phone ?? null,
+                user_level,
             },
             select: {
-                email: true,
-                nickname: true,
+                user_id: true,
                 first_name: true,
                 last_name: true,
+                email: true,
+                user_level: true,
             }
         });
 
         return user;
     }
-
 
     static async getUserService(user_id: string) {
         if (!user_id) {
@@ -83,13 +51,16 @@ class UserService {
         }
 
         const user = await prisma.user.findFirst({
-            where: { user_id: user_id },
+            where: { user_id },
             select: {
                 user_id: true,
-                email: true,
-                nickname: true,
                 first_name: true,
                 last_name: true,
+                email: true,
+                phone: true,
+                user_level: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -98,6 +69,140 @@ class UserService {
         }
 
         return user;
+    }
+
+    static async updateUserService(user_id: string, data: Partial<User>) {
+        if (!user_id) {
+            throw new Error("User ID is missing");
+        }
+
+        const userExists = await prisma.user.findFirst({
+            where: { user_id }
+        });
+
+        if (!userExists) {
+            throw new Error("User not found");
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { user_id },
+            data: {
+                first_name: data.first_name ?? userExists.first_name,
+                last_name: data.last_name ?? userExists.last_name,
+                email: data.email ?? userExists.email,
+                phone: data.phone ?? userExists.phone,
+                user_level: data.user_level ?? userExists.user_level,
+            },
+            select: {
+                user_id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                phone: true,
+                user_level: true,
+                updatedAt: true,
+            }
+        });
+
+        return updatedUser;
+    }
+
+    static async createCompanyService(data: Company) {
+        const { company_name, cnpj, fantasy_name, tax_rate, userId } = data;
+
+        if (!company_name || !cnpj || !userId) {
+            throw new Error("Company name, CNPJ or User ID is missing");
+        }
+
+        const companyAlreadyExists = await prisma.company.findFirst({
+            where: { cnpj }
+        });
+
+        if (companyAlreadyExists) {
+            throw new Error("Company with this CNPJ already exists");
+        }
+
+        const newCompany = await prisma.company.create({
+            data: {
+                company_name,
+                cnpj,
+                fantasy_name: fantasy_name ?? null,
+                tax_rate: tax_rate ?? null,
+                userId,
+            },
+            select: {
+                company_id: true,
+                company_name: true,
+                cnpj: true,
+                fantasy_name: true,
+                tax_rate: true,
+                userId: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        });
+
+        return newCompany;
+    }
+
+    static async getCompanyService(company_id: string) {
+        if (!company_id) {
+            throw new Error("Company ID is missing");
+        }
+
+        const company = await prisma.company.findFirst({
+            where: { company_id },
+            select: {
+                company_id: true,
+                company_name: true,
+                cnpj: true,
+                fantasy_name: true,
+                tax_rate: true,
+                userId: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        });
+
+        if (!company) {
+            throw new Error("Company not found");
+        }
+
+        return company;
+    }
+
+    static async updateCompanyService(company_id: string, data: Partial<Company>) {
+        if (!company_id) {
+            throw new Error("Company ID is missing");
+        }
+
+        const companyExists = await prisma.company.findFirst({
+            where: { company_id }
+        });
+
+        if (!companyExists) {
+            throw new Error("Company not found");
+        }
+
+        const updatedCompany = await prisma.company.update({
+            where: { company_id },
+            data: {
+                company_name: data.company_name ?? companyExists.company_name,
+                cnpj: data.cnpj ?? companyExists.cnpj,
+                fantasy_name: data.fantasy_name ?? companyExists.fantasy_name,
+                tax_rate: data.tax_rate ?? companyExists.tax_rate,
+            },
+            select: {
+                company_id: true,
+                company_name: true,
+                cnpj: true,
+                fantasy_name: true,
+                tax_rate: true,
+                updatedAt: true,
+            }
+        });
+
+        return updatedCompany;
     }
 }
 

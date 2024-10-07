@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,55 +8,46 @@ datasource db {
 }
 
 model User {
-  user_id                  String  @id 
-  nickname                 String?  @db.VarChar(50)
-  first_name               String  @db.VarChar(100)
-  last_name                String  @db.VarChar(100)
-  gender                   String? @db.VarChar(20)
-  email                    String  @unique @db.VarChar(255)
-  identification_type      String? @db.VarChar(20)
-  identification_number    String? @db.VarChar(50)
-  country_id               Int?
-  state                    String? @db.VarChar(100)
-  city                     String? @db.VarChar(100)
-  address                  String? @db.Text
-  zip_code                 String? @db.VarChar(20)
-  phone_area_code          String? @db.VarChar(10)
-  phone_number             String? @db.VarChar(20)
-  phone_verified           Boolean? @default(false)
-  alternative_phone_area_code String? @db.VarChar(10)
-  alternative_phone_number String? @db.VarChar(20)
-  user_type                String? @db.VarChar(20)
-  seller_experience        String? @db.VarChar(50)
-  seller_reputation_level_id Int?
-  seller_power_seller_status Boolean? @default(false)
-  seller_transactions_total Int?    @default(0)
-  seller_transactions_completed Int? @default(0)
-  seller_transactions_canceled Int? @default(0)
-  seller_ratings_positive  Float?   @default(0.0)
-  seller_ratings_negative  Float?   @default(0.0)
-  seller_ratings_neutral   Float?   @default(0.0)
-  buyer_canceled_transactions Int?  @default(0)
-  site_status              String? @db.VarChar(20)
-  allow_to_list            Boolean? @default(false)
-  allow_to_buy             Boolean? @default(false)
-  allow_to_sell            Boolean? @default(false)
-  mercadopago_tc_accepted  Boolean? @default(false)
-  mercadopago_account_type String? @db.VarChar(20)
-  mercadoenvios            Boolean? @default(false)
-  credit                   Json?   
-  tags                     String? @db.VarChar(255)
-  points                   Int?     @default(0)
-  site_id                  String? @db.Text
-  permalink                String? @db.Text
-  logo                     String? @db.VarChar(255)
-  bill_data                String? @db.Text 
-  seller_reputation        String?  @db.Text 
-  buyer_reputation         String?  @db.Text 
-  status                   String? @db.VarChar(20) 
-  secure_email             Boolean? @default(false) 
-  company                  String? @db.VarChar(100) 
-  context                  String? @db.Text 
-  thumbnail                String? @db.Text 
-  registration_identifiers String? @db.Text 
-}  
+  user_id    String    @id @default(cuid())
+  first_name String    @db.VarChar(100)
+  last_name  String    @db.VarChar(100)
+  email      String    @db.VarChar(255) @unique
+  phone      String?   @db.VarChar(20)  // Celular
+  user_level String    @db.VarChar(20)  // Nível do Usuário
+
+  // Relacionamento com Company
+  companies  Company[] // Um usuário pode ter várias empresas
+
+  // Timestamps
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Company {
+  company_id   String   @id @default(cuid())
+  company_name String   @db.VarChar(255)  // Nome da Empresa
+  cnpj         String   @db.VarChar(20)   @unique // CNPJ
+  fantasy_name String?  @db.VarChar(255)  // Nome Fantasia
+  tax_rate     Float?   // Taxa de Imposto Paga Atualmente
+
+  // Relacionamento com User
+  user         User     @relation(fields: [userId], references: [user_id])
+  userId       String
+
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Notifications {
+  notification_id String   @id @default(cuid())
+  title           String   @db.VarChar(255)
+  message         String   @db.VarChar(255)
+  read            Boolean  @default(false)
+
+  user            User     @relation(fields: [userId], references: [user_id])
+  userId          String
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
