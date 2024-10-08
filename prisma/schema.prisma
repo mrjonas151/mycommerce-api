@@ -44,6 +44,7 @@ model Company {
 
 model Notifications {
   notification_id String     @id @default(cuid())
+  platform        String     
   title           String     // Título da Notificação
   message         String     // Mensagem da Notificação
   read            Boolean    @default(false)
