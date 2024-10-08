@@ -8,46 +8,49 @@ datasource db {
 }
 
 model User {
-  user_id    String    @id @default(cuid())
-  first_name String    @db.VarChar(100)
-  last_name  String    @db.VarChar(100)
-  email      String    @db.VarChar(255) @unique
-  phone      String?   @db.VarChar(20)  // Celular
-  user_level String    @db.VarChar(20)  // Nível do Usuário
+  user_id    String       @id @default(cuid())
+  first_name String       // Nome do usuário
+  last_name  String       // Sobrenome do usuário
+  email      String       @unique  // Email do usuário
+  phone      String?      // Celular
+  user_level String       // Nível do Usuário
 
   // Relacionamento com Company
-  companies  Company[] // Um usuário pode ter várias empresas
+  companies  Company[]    // Um usuário pode ter várias empresas
+
+  // Relacionamento com Notifications
+  notifications Notifications[] // Um usuário pode ter várias notificações
 
   // Timestamps
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model Company {
-  company_id   String   @id @default(cuid())
-  company_name String   @db.VarChar(255)  // Nome da Empresa
-  cnpj         String   @db.VarChar(20)   @unique // CNPJ
-  fantasy_name String?  @db.VarChar(255)  // Nome Fantasia
-  tax_rate     Float?   // Taxa de Imposto Paga Atualmente
+  company_id   String      @id @default(cuid())
+  company_name String       // Nome da Empresa
+  cnpj         String      @unique // CNPJ
+  fantasy_name String?     // Nome Fantasia
+  tax_rate     Float?      // Taxa de Imposto Paga Atualmente
 
   // Relacionamento com User
-  user         User     @relation(fields: [userId], references: [user_id])
+  user         User        @relation(fields: [userId], references: [user_id])
   userId       String
 
   // Timestamps
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Notifications {
-  notification_id String   @id @default(cuid())
-  title           String   @db.VarChar(255)
-  message         String   @db.VarChar(255)
-  read            Boolean  @default(false)
+  notification_id String     @id @default(cuid())
+  title           String     // Título da Notificação
+  message         String     // Mensagem da Notificação
+  read            Boolean    @default(false)
 
-  user            User     @relation(fields: [userId], references: [user_id])
+  user            User       @relation(fields: [userId], references: [user_id])
   userId          String
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
