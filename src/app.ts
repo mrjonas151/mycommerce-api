@@ -10,8 +10,9 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-    origin: 'https://guiaseller-backend.dlmi5z.easypanel.host', 
-    credentials: true 
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use("/users", userRoutes);
