@@ -10,7 +10,7 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-    origin: 'https://guiaseller-guiasellerfront.dlmi5z.easypanel.host', 
+    origin: 'https://guiaseller-backend.dlmi5z.easypanel.host', 
     credentials: true 
 }));
 
