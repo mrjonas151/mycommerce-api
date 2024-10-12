@@ -15,4 +15,6 @@ router.get("/company/:company_id", UserController.getCompany);
 
 router.put("/company/:company_id", UserController.updateCompany);
 
+router.post("/webhook", UserController.handleWebhook);
+
 export default router;

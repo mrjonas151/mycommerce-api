@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/userService'; 
+import axios from 'axios';
 
 class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
@@ -61,6 +62,23 @@ class UserController {
             res.status(200).json(updatedCompany);
         } catch (error: any) {
             res.status(400).json({ message: error.message });
+        }
+    }
+
+    static async handleWebhook(req: Request, res: Response): Promise<void> {
+        try {
+            const { word } = req.body; 
+
+            if (!word) {
+                res.status(400).json({ message: "A palavra é obrigatória." });
+            }
+
+            const response = await axios.post('https://n8n.criartificial.com/webhook/9e16c197-c97d-43ed-a714-7b3d3377d7c4', { word });
+
+            const keywords = response.data.keywords;
+            res.status(200).json({ keywords });
+        } catch (error: any) {
+            res.status(500).json({ message: "Erro ao processar o webhook.", error: error.message });
         }
     }
 }
