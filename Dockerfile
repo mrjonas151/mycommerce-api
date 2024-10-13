@@ -1,3 +1,4 @@
+# Build stage
 FROM node:20 AS build
 
 WORKDIR /app
@@ -5,10 +6,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Gerar o cliente Prisma
+RUN npx prisma generate
+
 COPY . .
 
 RUN npm run build
 
+# Production stage
 FROM node:20
 
 WORKDIR /app
@@ -20,4 +25,4 @@ COPY .env .env
 
 EXPOSE 8080
 
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
