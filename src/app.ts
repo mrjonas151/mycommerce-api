@@ -69,9 +69,9 @@ app.post("/webhook/:userId", (req: Request, res: Response) => {
     webhooksByUser[userId].push(webhookData); // Adiciona o novo webhook para o userId
 
     // Exibir log com os detalhes da requisição
-    console.log("Webhook recebido para o usuário: ${ userId }");
+    console.log(`Webhook recebido para o usuário: ${ userId }`);
     console.log('Dados recebidos:', req.body);
-    console.log("Palavra: ${ word }");
+    console.log(`Palavra: ${ word }`);
 
     // Emitir os dados para o frontend via WebSocket
     io.emit("webhookReceived", { userId, word });
