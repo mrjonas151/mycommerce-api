@@ -1,5 +1,4 @@
 import express from "express";
-import userRoutes from "./routes/userRoutes";
 import cors from "cors";
 import http from "http";
 import initWebSocketServer from "./websocket"; 
@@ -17,27 +16,53 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Endpoint para receber webhooks
-app.post("/webhook", (req, res) => {
-    const { word } = req.body; // Obtendo a palavra do corpo da requisição
+// Armazenar webhooks por userId
+const webhooksByUser: { [key: string]: Array<{ word: string; timestamp: string; data: any }> } = {}; // Usando um objeto para armazenar os dados temporariamente
 
-    // Verifique se a palavra foi enviada
+// Endpoint para receber webhooks, agora esperando userId
+app.post("/webhook/:userId", (req, res) => {
+    const { userId } = req.params; // Obtém o userId da URL
+    const { word } = req.body; // Obtém os dados do corpo da requisição
+
+    // Verifique se word foi enviado no corpo da requisição
     if (!word) {
         return res.status(400).json({ message: "A palavra é obrigatória." });
     }
 
+    // Inicializa um array para armazenar os webhooks do usuário, se ainda não existir
+    if (!webhooksByUser[userId]) {
+        webhooksByUser[userId] = [];
+    }
+
+    // Armazena o webhook recebido com o timestamp
+    const webhookData = {
+        word,
+        timestamp: new Date().toISOString(),
+        data: req.body,
+    };
+    webhooksByUser[userId].push(webhookData); // Adiciona o novo webhook para o userId
+
     // Exibir log com os detalhes da requisição
-    console.log('Webhook recebido:');
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log('Dados recebidos:', req.body); // Exibe todos os dados recebidos
-    console.log(`Palavra: ${word}`); // Exibe apenas a palavra recebida
+    console.log("Webhook recebido para o usuário: ${userId}");
+    console.log('Dados recebidos:', req.body);
+    console.log("Palavra: ${word}");
 
     // Responder ao webhook
-    res.status(200).json({ message: "Webhook recebido com sucesso!", word });
+    res.status(200).json({ message: "Webhook recebido com sucesso!", userId, webhookData });
 });
 
-// Rotas para usuários
-app.use("/users", userRoutes);
+// Endpoint para buscar os webhooks de um determinado userId
+app.get("/webhook/:userId", (req, res) => {
+    const { userId } = req.params;
+
+    // Verificar se existem webhooks para o userId
+    if (!webhooksByUser[userId]) {
+        return res.status(404).json({ message: "Nenhum webhook encontrado para o usuário ${userId}." });
+    }
+
+    // Retornar todos os webhooks do usuário
+    res.status(200).json(webhooksByUser[userId]);
+});
 
 // Inicializar servidor WebSocket
 const io = initWebSocketServer(httpServer);
