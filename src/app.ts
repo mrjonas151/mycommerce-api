@@ -94,7 +94,7 @@ app.get("/webhook/:userId", (req: Request, res: Response) => {
     res.status(200).json(webhooksByUser[userId]);
 });
 
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 
 // Inicializar servidor WebSocket
 const ioServer = initWebSocketServer(httpServer);
