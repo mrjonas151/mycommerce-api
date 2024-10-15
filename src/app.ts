@@ -3,6 +3,7 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io"; // WebSocket
 import initWebSocketServer from "./websocket"; 
+import userRoutes from "./routes/userRoutes";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -92,6 +93,8 @@ app.get("/webhook/:userId", (req: Request, res: Response) => {
     // Retornar todos os webhooks do userId
     res.status(200).json(webhooksByUser[userId]);
 });
+
+app.use("/user", userRoutes);
 
 // Inicializar servidor WebSocket
 const ioServer = initWebSocketServer(httpServer);
