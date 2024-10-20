@@ -38,6 +38,7 @@ class UserService {
                 first_name: true,
                 last_name: true,
                 email: true,
+                isAlpha: true,
                 user_level: true,
             }
         });
@@ -101,6 +102,7 @@ class UserService {
                 last_name: true,
                 email: true,
                 phone: true,
+                isAlpha: true,
                 user_level: true,
                 updatedAt: true,
             }
