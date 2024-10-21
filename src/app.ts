@@ -80,7 +80,7 @@ app.post('/test', async (req: Request, res: Response) => {
     res.send('Ok');
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Erro na requisição:', error.response?.data || error.message);
+      console.error('Erro na requisição:');
     } else {
       if (error instanceof Error) {
         console.error('Erro na requisição:', error.message);
@@ -117,7 +117,11 @@ app.post('/getAccessToken', async (req: Request, res: Response) => {
     console.log(response.data);
     res.send('Ok');
   } catch (error) {
-    console.error('Erro na requisição:', error.response?.data || error.message);
+    if (axios.isAxiosError(error)) {
+      console.error('Erro na requisição:', error.response?.data || error.message);
+    } else {
+      console.error('Erro na requisição:', error);
+    }
     res.status(500).send('Erro na requisição');
   }
 });
