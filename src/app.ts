@@ -114,8 +114,7 @@ app.post('/getAccessToken', async (req: Request, res: Response) => {
       }
     });
 
-    console.log(response.data);
-    res.send('Ok');
+    res.send(response.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Erro na requisição:', error.response?.data || error.message);
@@ -123,6 +122,34 @@ app.post('/getAccessToken', async (req: Request, res: Response) => {
       console.error('Erro na requisição:', error);
     }
     res.status(500).send('Erro na requisição');
+  }
+});
+
+app.get('/vendas', async (req: Request, res: Response) => {
+  const { from, to } = req.query;
+
+  if (!from || !to) {
+    return res.status(400).json({ message: 'Os parâmetros "from" e "to" são obrigatórios.' });
+  }
+
+  const sellerId = '81270097'; // ID do vendedor
+  const url = `https://api.mercadolibre.com/orders/search?seller=${sellerId}&order.date_created.from=${from}&order.date_created.to=${to}`;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`, // Usar o token de acesso válido
+        'Content-Type': 'application/json',
+      },
+    });
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Erro na requisição:', error.response?.data || error.message);
+    } else {
+      console.error('Erro na requisição:', error);
+    }
+    res.status(500).json({ message: 'Erro na requisição para a API de vendas.' });
   }
 });
 
