@@ -128,11 +128,18 @@ app.post('/getAccessToken', async (req: Request, res: Response) => {
 app.get('/vendas', async (req: Request, res: Response) => {
   const { from, to } = req.query;
 
+  // Verificar se os parâmetros obrigatórios foram passados
   if (!from || !to) {
     return res.status(400).json({ message: 'Os parâmetros "from" e "to" são obrigatórios.' });
   }
 
   const sellerId = '81270097'; // ID do vendedor
+  const accessToken = req.headers.authorization?.split(' ')[1]; // Extrair o token do header da requisição
+  
+  if (!accessToken) {
+    return res.status(401).json({ message: 'Token de acesso não fornecido.' });
+  }
+
   const url = `https://api.mercadolibre.com/orders/search?seller=${sellerId}&order.date_created.from=${from}&order.date_created.to=${to}`;
   try {
     const response = await axios.get(url, {
@@ -146,12 +153,14 @@ app.get('/vendas', async (req: Request, res: Response) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Erro na requisição:', error.response?.data || error.message);
+      return res.status(error.response?.status || 500).json({ message: error.response?.data || 'Erro na requisição para a API de vendas.' });
     } else {
       console.error('Erro na requisição:', error);
+      return res.status(500).json({ message: 'Erro inesperado na API de vendas.' });
     }
-    res.status(500).json({ message: 'Erro na requisição para a API de vendas.' });
   }
 });
+
 
 // Endpoint para receber webhooks via POST
 app.post("/webhook/:userId", (req: Request, res: Response) => {
