@@ -163,13 +163,13 @@ app.get('/user-info', async (req: Request, res: Response) => {
 
 app.get('/login-ml', (req: Request, res: Response) => {
   const clientId = '6973021883530314'; 
-  const redirectUri = 'https://guiaseller.com/dashboard'; 
+  const redirectUri = 'https://guiaseller.com/dashboard/ml/callback'; 
   const mlAuthUrl = `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
   
   res.redirect(mlAuthUrl); 
 });
 
-app.get('/ml/callback', async (req: Request, res: Response) => {
+app.get('/callback', async (req: Request, res: Response) => {
   const { code } = req.query; // Captura o código de autorização
 
   if (!code) {
