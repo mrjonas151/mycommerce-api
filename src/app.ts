@@ -5,6 +5,7 @@ import axios from "axios";
 import { Server } from "socket.io";
 import initWebSocketServer from "./websocket";
 import userRoutes from "./routes/userRoutes";
+import integrationRoutes from './routes/integrationsRoutes'; 
 
 // Configurações do Mercado Livre
 const clientId = 'SEU_CLIENT_ID';
@@ -91,6 +92,8 @@ app.post('/test', async (req: Request, res: Response) => {
     res.status(500).send('Erro na requisição');
   }
 });
+
+app.use("/integrations", integrationRoutes); 
 
 // Rota para capturar o refresh token usando refresh token
 app.post('/getAccessToken', async (req: Request, res: Response) => {
