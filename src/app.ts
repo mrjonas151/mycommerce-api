@@ -125,6 +125,112 @@ app.post('/getAccessToken', async (req: Request, res: Response) => {
   }
 });
 
+async function getUserInfo(accessToken: any) {
+  try {
+    const response = await axios.get('https://api.mercadolibre.com/users/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao obter informações do usuário:', error);
+  }
+}
+
+app.get('/user-info', async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ message: 'Token de acesso não fornecido.' });
+  }
+
+  try {
+    const userInfo = await getUserInfo(accessToken);
+
+    if (!userInfo) {
+      return res.status(404).json({ message: 'Não foi possível obter as informações do usuário.' });
+    }
+
+    return res.status(200).json(userInfo);
+  } catch (error) {
+    console.error('Erro ao buscar informações do usuário:', error);
+    return res.status(500).json({ message: 'Erro ao buscar informações do usuário.' });
+  }
+});
+
+
+app.get('/login-ml', (req: Request, res: Response) => {
+  const clientId = '6973021883530314'; 
+  const redirectUri = 'https://guiaseller.com/dashboard'; 
+  const mlAuthUrl = `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
+  res.redirect(mlAuthUrl); 
+});
+
+app.get('/callback', async (req: Request, res: Response) => {
+  const { code } = req.query; // Captura o código de autorização
+
+  if (!code) {
+    return res.status(400).json({ message: 'Código de autorização não fornecido.' });
+  }
+
+  try {
+    // Trocar o código de autorização por um token de acesso
+    const appId = '6973021883530314';
+    const clientSecret = 'VwhQK2Q0z9COyksPLgAWcdXCJ9aswt7i';
+    const redirectUri = 'https://guiaseller.com/dashboard';
+    
+    const tokenResponse = await axios.post('https://api.mercadolibre.com/oauth/token', new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: appId,
+      client_secret: clientSecret,
+      code: code as string,
+      redirect_uri: redirectUri
+    }).toString(), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    });
+
+    // Captura o token de acesso e refresh token da resposta
+    const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
+    // Aqui você pode salvar o token em um banco de dados ou session
+    // Exemplo: salvar na session ou cookie
+    res.cookie('mlAccessToken', access_token, { httpOnly: true });
+    
+    // Redireciona o usuário de volta para o dashboard ou outra página
+    res.redirect('/dashboard');
+    
+  } catch (error) {
+    console.error('Erro ao trocar código por token:', error);
+    res.status(500).json({ message: 'Erro ao obter token de acesso.' });
+  }
+});
+
+app.get('/user-info', async (req: Request, res: Response) => {
+  const accessToken = req.cookies.mlAccessToken; // Recuperar o access token salvo no cookie
+
+  if (!accessToken) {
+    return res.status(401).json({ message: 'Usuário não autenticado.' });
+  }
+
+  try {
+    const userInfo = await axios.get('https://api.mercadolibre.com/users/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    res.status(200).json(userInfo.data);
+  } catch (error) {
+    console.error('Erro ao obter informações do usuário:', error);
+    res.status(500).json({ message: 'Erro ao obter informações do usuário.' });
+  }
+});
+
 app.get('/vendas', async (req: Request, res: Response) => {
   const { from, to } = req.query;
 
