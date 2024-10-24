@@ -169,7 +169,7 @@ app.get('/login-ml', (req: Request, res: Response) => {
   res.redirect(mlAuthUrl); 
 });
 
-app.get('/callback', async (req: Request, res: Response) => {
+app.get('/ml/callback', async (req: Request, res: Response) => {
   const { code } = req.query; // Captura o código de autorização
 
   if (!code) {
