@@ -22,6 +22,8 @@ model User {
   // Relacionamento com Notifications
   notifications Notifications[] // Um usuário pode ter várias notificações
 
+  Integrations Integrations[]
+
   // Timestamps
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -55,4 +57,16 @@ model Notifications {
 
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+}
+
+model Integrations {
+  integration_id     Int     @id @default(autoincrement())
+  user_marketplace_id String     
+  authorization_code String     
+  access_token       String     
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
+
+  user               User       @relation(fields: [userId], references: [user_id])
+  userId             String
 }
